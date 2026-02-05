@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Resume {
+  id           String   @id @default(cuid())
+  rawText      String   @db.Text
+  structured   Json     // Optimized content from AI
+  atsScore     Int
+  suggestions  String[] 
+  createdAt    DateTime @default(now())
+}
