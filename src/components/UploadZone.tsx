@@ -28,9 +28,9 @@ export default function UploadZone() {
                 if (prev < 80) {
                     increment = Math.random() * 10 + 5; // Much faster initially
                 } else if (prev < 90) {
-                    increment = Math.random() * 2 + 1; // Medium
+                    increment = Math.random() * 1 + 0.1; // Medium
                 } else {
-                    increment = 0.5; // Crawl at the very end
+                    increment = 0.2; // Crawl at the very end
                 }
 
                 return Math.min(prev + increment, 100);

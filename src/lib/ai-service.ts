@@ -30,17 +30,31 @@ export async function analyzeResumeData(text: string) {
         try {
             console.log(`Attempting analysis with ${config.name}...`);
             const model = genAI.getGenerativeModel(
-                { model: config.name },
+                {
+                    model: config.name,
+                    generationConfig: {
+                        temperature: 0,
+                        topP: 0.1,
+                        topK: 1,
+                    }
+                },
                 { apiVersion: config.version as any }
             );
 
-            const prompt = `You are a professional resume analyzer. Analyze the provided resume text and return a high-quality optimization report in JSON format.
-      
+            const prompt = `You are an expert ATS (Applicant Tracking System) Specialist. 
+Analyze the provided resume text and return a high-quality, professional optimization report in JSON format.
+
+Scoring Rubric (Calculate total atsScore out of 100):
+1. Hard Skills/Keywords (40%): Presence of industry-standard technologies and skills.
+2. Experience Impact (30%): Use of action verbs and quantifiable metrics (e.g., "Increased revenue by 20%").
+3. Formatting & Structure (20%): Clear hierarchy, presence of standard sections (Experience, Education, etc.).
+4. Contact Info & Summary (10%): Completeness of professional links and professional summary.
+
 Rules:
 1. Output ONLY a valid JSON object. No markdown, no code blocks, no preamble.
 2. Follow this schema exactly: ${jsonSchema}
-3. The atsScore should be 0-100 based on keyword density and impact.
-4. Experience achievements should be metrics-driven bullet points.
+3. The atsScore MUST be a calculated number based on the rubric above.
+4. Experience achievements MUST be translated into metrics-driven bullet points if they aren't already.
 
 Resume Text:
 ${text}`;

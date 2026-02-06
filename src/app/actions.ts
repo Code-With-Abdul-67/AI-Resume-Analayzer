@@ -28,23 +28,22 @@ export async function processResume(formData: FormData) {
     if (existingResume) {
       savedId = existingResume.id;
       console.log("Deduplication: Found existing resume analysis.");
-      return; // Skip AI analysis and create step
+    } else {
+      // 3. AI Analysis (Ensure your ai-service.ts strips markdown backticks!)
+      const analysis = await analyzeResumeData(rawText);
+
+      // 3. Database Save
+      const saved = await prisma.resume.create({
+        data: {
+          rawText,
+          structured: analysis.newResume || {},
+          atsScore: analysis.atsScore || 0,
+          suggestions: analysis.tips || [],
+        },
+      });
+
+      savedId = saved.id;
     }
-
-    // 3. AI Analysis (Ensure your ai-service.ts strips markdown backticks!)
-    const analysis = await analyzeResumeData(rawText);
-
-    // 3. Database Save
-    const saved = await prisma.resume.create({
-      data: {
-        rawText,
-        structured: analysis.newResume || {},
-        atsScore: analysis.atsScore || 0,
-        suggestions: analysis.tips || [],
-      },
-    });
-
-    savedId = saved.id;
   } catch (error: any) {
     console.error("Action Error:", error.message);
     throw new Error(error.message);

@@ -49,11 +49,8 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                             <div className="px-8 py-6 border-b border-glass-border bg-white/5 flex items-center justify-between">
                                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                     <span className="w-2 h-8 bg-accent rounded-full" />
-                                    Optimized Content
+                                    Resume Report
                                 </h2>
-                                <span className="text-xs font-mono text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
-                                    AI ENHANCED
-                                </span>
                             </div>
 
                             <div className="p-8 space-y-12">

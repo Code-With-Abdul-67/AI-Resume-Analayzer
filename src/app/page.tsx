@@ -11,9 +11,6 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-4 w-full space-y-16">
         <header className="text-center space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-accent text-xs font-medium mb-4">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" /> v2.5 Now Live
-          </div>
           <h1 className="text-6xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
             AI <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-secondary">Resume</span> Analyzer
           </h1>
@@ -43,7 +40,7 @@ export default function Home() {
         </section>
 
         <footer className="text-center pt-8 text-slate-500 text-sm font-medium">
-          Powered by Gemini 2.5 Flash & Next.js 15
+          Powered by Gemini & Next.JS ✨
         </footer>
       </main>
     </div>
