@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { AnimatedScore } from "@/components/motion/AnimatedScore";
 import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
+import UploadZone from "@/components/UploadZone";
+import PDFDownloadButton from "@/components/PDFDownloadButton";
 
 export const dynamic = "force-dynamic";
 
@@ -185,20 +187,23 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                             </ul>
                         </section>
 
-                        <section className="rounded-3xl p-8 bg-gradient-to-br from-primary to-violet-900 text-white shadow-2xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-                            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/20 blur-[50px] rounded-full group-hover:scale-150 transition-transform duration-700" />
+                        <section className="glass-card rounded-3xl p-8 hover:border-primary/50 hover:bg-white/10 transition-all duration-300 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[50px] pointer-events-none" />
 
                             <h3 className="font-bold text-2xl mb-2 relative z-10">Job Ready?</h3>
                             <p className="text-blue-100 mb-8 relative z-10 opacity-90">
                                 Your resume is optimized and ready for the modern hiring process.
                             </p>
 
-                            <button className="w-full bg-white text-primary py-4 rounded-xl font-black text-lg hover:bg-slate-100 hover:scale-[1.02] active:scale-[0.98] transition-all relative z-10 shadow-xl flex items-center justify-center gap-2">
-                                <FileText size={20} />
-                                Download Improved PDF
-                            </button>
+                            <PDFDownloadButton
+                                data={structured}
+                                fileName={`${structured.personalInfo?.name?.replace(/\s+/g, '-') || 'optimized'}-resume.pdf`}
+                            />
                         </section>
+
+                        <div className="pt-4">
+                            <UploadZone variant="compact" />
+                        </div>
                     </aside>
                 </div>
             </div>

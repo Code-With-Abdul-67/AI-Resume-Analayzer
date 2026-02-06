@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, CheckCircle } from 'lucide-react';
+import { Upload, Loader2, CheckCircle, Plus } from 'lucide-react';
 import { processResume } from '@/app/actions';
 
 const loadingSteps = [
@@ -11,7 +11,11 @@ const loadingSteps = [
     "Finalizing report..."
 ];
 
-export default function UploadZone() {
+interface UploadZoneProps {
+    variant?: 'full' | 'compact';
+}
+
+export default function UploadZone({ variant = 'full' }: UploadZoneProps) {
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [stepIndex, setStepIndex] = useState(0);
@@ -77,20 +81,32 @@ export default function UploadZone() {
     return (
         <>
             {/* Standard Upload UI */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="border border-dashed border-white/20 rounded-2xl p-12 text-center bg-black/20 hover:bg-black/40 transition-all duration-300 group shadow-2xl backdrop-blur-sm"
-            >
-                <label className="cursor-pointer block group">
-                    <div className="bg-white/5 w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-white/10 group-hover:border-primary/50 group-hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
-                        <Upload className="h-12 w-12 text-slate-300 group-hover:text-primary transition-colors" />
-                    </div>
-                    <span className="text-3xl font-black block text-white mb-2 group-hover:text-primary transition-colors tracking-tight">Upload Resume (PDF)</span>
-                    <span className="text-sm text-slate-400 font-bold uppercase tracking-widest">AI will automatically analyze and optimize it</span>
-                    <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
-                </label>
-            </motion.div>
+            {variant === 'full' ? (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="border border-dashed border-white/20 rounded-2xl p-12 text-center bg-black/20 hover:bg-black/40 transition-all duration-300 group shadow-2xl backdrop-blur-sm"
+                >
+                    <label className="cursor-pointer block group">
+                        <div className="bg-white/5 w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-white/10 group-hover:border-primary/50 group-hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+                            <Upload className="h-12 w-12 text-slate-300 group-hover:text-primary transition-colors" />
+                        </div>
+                        <span className="text-3xl font-black block text-white mb-2 group-hover:text-primary transition-colors tracking-tight">Upload Resume (PDF)</span>
+                        <span className="text-sm text-slate-400 font-bold uppercase tracking-widest">AI will automatically analyze and optimize it</span>
+                        <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
+                    </label>
+                </motion.div>
+            ) : (
+                <div className="w-full">
+                    <label className="cursor-pointer">
+                        <div className="w-full bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 py-4 rounded-xl font-bold text-lg text-white transition-all flex items-center justify-center gap-2 group">
+                            <Plus size={20} className="group-hover:text-primary transition-colors" />
+                            Upload Another Resume
+                        </div>
+                        <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
+                    </label>
+                </div>
+            )}
 
             {/* Full Screen Loading Overlay */}
             <AnimatePresence>
