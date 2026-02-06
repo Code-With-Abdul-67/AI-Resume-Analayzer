@@ -5,10 +5,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export async function analyzeResumeData(text: string) {
     // Try multiple specific model aliases to bypass regional 404s and handle speed
     const configs = [
-        { name: "gemini-1.5-flash-latest", version: "v1beta" },
-        { name: "gemini-1.5-flash", version: "v1beta" },
-        { name: "gemini-1.5-pro-latest", version: "v1beta" },
-        { name: "gemini-pro", version: "v1" }
+        { name: "gemini-2.0-flash", version: "v1" },
+        { name: "gemini-2.5-flash", version: "v1" },
+        { name: "gemini-2.5-pro", version: "v1" }
     ];
 
     let lastError;
