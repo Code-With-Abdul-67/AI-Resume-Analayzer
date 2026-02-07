@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Github, HandHelping, UserPlus, Menu, X, LogOut } from "lucide-react";
+import { Github, HandHelping, UserPlus, Menu, X, LogOut, History } from "lucide-react";
 
 export default function Navbar() {
     const { data: session, status } = useSession();
@@ -62,6 +62,13 @@ export default function Navbar() {
                                 <div className="w-24 h-9 bg-primary/10 animate-pulse rounded-lg ml-2" />
                             ) : session ? (
                                 <div className="flex items-center gap-3 ml-2">
+                                    <Link
+                                        href="/history"
+                                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors px-3 py-2 font-medium text-sm"
+                                    >
+                                        <History size={16} />
+                                        My History
+                                    </Link>
                                     <div className="flex items-center gap-2 glass-card px-3 py-1.5 rounded-lg border-white/10">
                                         {session.user?.image ? (
                                             <img
@@ -155,6 +162,15 @@ export default function Navbar() {
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <Link
+                                            href="/history"
+                                            onClick={() => setIsOpen(false)}
+                                            className="w-full glass-card hover:bg-white/5 text-slate-200 px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 border-white/10"
+                                        >
+                                            <History className="w-4 h-4" />
+                                            View My History
+                                        </Link>
                                         <button
                                             onClick={() => {
                                                 setIsOpen(false);

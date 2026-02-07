@@ -5,6 +5,7 @@ import { extractTextFromPDF } from "@/backend/lib/pdf-worker";
 import { analyzeResumeData } from "@/backend/lib/ai-service";
 import { redirect } from "next/navigation";
 import { auth } from "@/backend/auth";
+import { revalidatePath } from "next/cache";
 
 export async function processResume(formData: FormData) {
   let savedId: string | null = null;
@@ -63,4 +64,19 @@ export async function processResume(formData: FormData) {
   if (savedId) {
     redirect(`/results/${savedId}`);
   }
+}
+
+export async function clearHistory() {
+  const session = await auth();
+  if (!session || !session.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.resume.deleteMany({
+    where: {
+      userId: session.user.id
+    } as any
+  });
+
+  revalidatePath('/history');
 }

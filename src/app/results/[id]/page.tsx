@@ -1,9 +1,10 @@
 import { prisma } from "@/backend/lib/prisma";
 import { notFound } from "next/navigation";
 import { AnimatedScore } from "@/frontend/components/motion/AnimatedScore";
-import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
+import { CheckCircle2, ChevronRight, FileText, Linkedin, Share2 } from "lucide-react";
 import UploadZone from "@/frontend/components/UploadZone";
 import PDFDownloadButton from "@/frontend/components/PDFDownloadButton";
+import ShareButton from "@/frontend/components/ShareButton";
 
 import { auth } from "@/backend/auth";
 import { redirect } from "next/navigation";
@@ -206,13 +207,18 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 Your resume is optimized and ready for the modern hiring process.
                             </p>
 
-                            <PDFDownloadButton
-                                data={structured}
-                                fileName={`${structured.personalInfo?.name?.replace(/\s+/g, '-') || 'optimized'}-resume.pdf`}
-                            />
+                            <div className="flex flex-col gap-6">
+                                <div className="w-full">
+                                    <PDFDownloadButton
+                                        data={structured}
+                                        fileName={`${structured.personalInfo?.name?.replace(/\s+/g, '-') || 'optimized'}-resume.pdf`}
+                                    />
+                                </div>
+                                <ShareButton />
+                            </div>
                         </section>
 
-                        <div className="pt-4">
+                        <div className="pt-8">
                             <UploadZone variant="compact" />
                         </div>
                     </aside>
