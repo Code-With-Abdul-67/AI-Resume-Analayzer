@@ -3,11 +3,12 @@
 import { prisma } from "@/lib/prisma";
 import { extractTextFromPDF } from "@/lib/pdf-worker";
 import { analyzeResumeData } from "@/lib/ai-service";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
 export async function processResume(formData: FormData) {
   let savedId: string | null = null;
+  const session = await auth();
 
   try {
     const file = formData.get("file") as File;
@@ -29,8 +30,10 @@ export async function processResume(formData: FormData) {
         structured: analysis.newResume || {},
         atsScore: analysis.atsScore || 0,
         suggestions: analysis.tips || [],
+        userId: session?.user?.id,
       },
     });
+
 
     savedId = saved.id;
   } catch (error: any) {

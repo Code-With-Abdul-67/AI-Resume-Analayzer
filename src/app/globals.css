@@ -24,16 +24,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html,
 body {
   background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020205 100%);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-/* Glassmorphism Utilities */
-/* .glass-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-} */
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}

@@ -5,20 +5,31 @@ import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
 import UploadZone from "@/components/UploadZone";
 import PDFDownloadButton from "@/components/PDFDownloadButton";
 
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+
 export const dynamic = "force-dynamic";
 
 export default async function ResultsPage({ params }: { params: { id: string } }) {
     const { id } = await params;
+    const session = await auth();
+
     const resume = await prisma.resume.findUnique({
         where: { id },
     });
 
     if (!resume) notFound();
 
+    // Data Isolation: If resume belongs to a user, only that user can see it
+    const res = resume as any;
+    if (res.userId && res.userId !== session?.user?.id) {
+        redirect("/");
+    }
+
     const structured = resume.structured as any;
 
     return (
-        <div className="min-h-screen py-12 px-4 relative overflow-hidden">
+        <div className="min-h-screen py-20 px- relative overflow-hidden">
             {/* Background elements */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px]" />
