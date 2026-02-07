@@ -63,9 +63,29 @@ ${text}`;
             const response = await result.response;
             const responseText = response.text();
 
-            // Clean potential Markdown wrapping before parsing
-            const cleanedJson = responseText.replace(/```json|```/g, "").trim();
-            return JSON.parse(cleanedJson);
+            // More robust JSON extraction
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                console.error("No JSON block found in response:", responseText);
+                throw new Error("Invalid AI response format");
+            }
+
+            const cleanedJson = jsonMatch[0];
+            const parsed = JSON.parse(cleanedJson);
+
+            // Ensure basic structure exists to prevent UI crashes
+            return {
+                atsScore: parsed.atsScore || 50,
+                newResume: {
+                    personalInfo: parsed.newResume?.personalInfo || {},
+                    summary: parsed.newResume?.summary || "",
+                    skills: parsed.newResume?.skills || [],
+                    experience: parsed.newResume?.experience || [],
+                    education: parsed.newResume?.education || [],
+                    projects: parsed.newResume?.projects || []
+                },
+                tips: parsed.tips || ["Focus on quantifiable achievements.", "Ensure your contact info is up to date."]
+            };
         } catch (error: any) {
             lastError = error;
             console.error(`${config.name} failed:`, error.message);

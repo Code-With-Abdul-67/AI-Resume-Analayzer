@@ -82,7 +82,10 @@ export default function UploadZone({ variant = 'full' }: UploadZoneProps) {
             if (error.message === 'NEXT_REDIRECT') return;
             console.error("Upload failed", error);
             setLoading(false);
-            alert("Something went wrong during analysis.");
+
+            // Show specific error if available
+            const errorMsg = error.message || "Something went wrong during analysis.";
+            alert(errorMsg);
         }
     };
 
