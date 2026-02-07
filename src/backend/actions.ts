@@ -1,10 +1,10 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { extractTextFromPDF } from "@/lib/pdf-worker";
-import { analyzeResumeData } from "@/lib/ai-service";
+import { prisma } from "@/backend/lib/prisma";
+import { extractTextFromPDF } from "@/backend/lib/pdf-worker";
+import { analyzeResumeData } from "@/backend/lib/ai-service";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { auth } from "@/backend/auth";
 
 export async function processResume(formData: FormData) {
   let savedId: string | null = null;
@@ -27,11 +27,11 @@ export async function processResume(formData: FormData) {
     const saved = await prisma.resume.create({
       data: {
         rawText,
-        structured: analysis.newResume || {},
+        structured: (analysis.newResume || {}) as any,
         atsScore: analysis.atsScore || 0,
         suggestions: analysis.tips || [],
         userId: session?.user?.id,
-      },
+      } as any,
     });
 
 

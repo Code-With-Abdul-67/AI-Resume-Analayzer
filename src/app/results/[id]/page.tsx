@@ -1,11 +1,11 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 import { notFound } from "next/navigation";
-import { AnimatedScore } from "@/components/motion/AnimatedScore";
+import { AnimatedScore } from "@/frontend/components/motion/AnimatedScore";
 import { CheckCircle2, ChevronRight, FileText } from "lucide-react";
-import UploadZone from "@/components/UploadZone";
-import PDFDownloadButton from "@/components/PDFDownloadButton";
+import UploadZone from "@/frontend/components/UploadZone";
+import PDFDownloadButton from "@/frontend/components/PDFDownloadButton";
 
-import { auth } from "@/auth";
+import { auth } from "@/backend/auth";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";

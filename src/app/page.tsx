@@ -1,6 +1,6 @@
 "use client";
 
-import UploadZone from "@/components/UploadZone";
+import UploadZone from "@/frontend/components/UploadZone";
 import { motion } from "framer-motion";
 
 export default function Home() {

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Loader2, CheckCircle, Plus } from 'lucide-react';
-import { processResume } from '@/app/actions';
+import { processResume } from '@/backend/actions';
 import { useSession } from 'next-auth/react';
 
 const loadingSteps = [
