@@ -19,31 +19,20 @@ export async function processResume(formData: FormData) {
     // 1. Extract text
     const rawText = await extractTextFromPDF(uint8Array);
 
-    // 2. CHECK FOR DEDUPLICATION: If exactly same text exists, return existing results
-    const existingResume = await prisma.resume.findFirst({
-      where: { rawText },
-      orderBy: { createdAt: 'desc' }
+    // 2. AI Analysis (Ensure your ai-service.ts strips markdown backticks!)
+    const analysis = await analyzeResumeData(rawText);
+
+    // 3. Database Save
+    const saved = await prisma.resume.create({
+      data: {
+        rawText,
+        structured: analysis.newResume || {},
+        atsScore: analysis.atsScore || 0,
+        suggestions: analysis.tips || [],
+      },
     });
 
-    if (existingResume) {
-      savedId = existingResume.id;
-      console.log("Deduplication: Found existing resume analysis.");
-    } else {
-      // 3. AI Analysis (Ensure your ai-service.ts strips markdown backticks!)
-      const analysis = await analyzeResumeData(rawText);
-
-      // 3. Database Save
-      const saved = await prisma.resume.create({
-        data: {
-          rawText,
-          structured: analysis.newResume || {},
-          atsScore: analysis.atsScore || 0,
-          suggestions: analysis.tips || [],
-        },
-      });
-
-      savedId = saved.id;
-    }
+    savedId = saved.id;
   } catch (error: any) {
     console.error("Action Error:", error.message);
     throw new Error(error.message);
