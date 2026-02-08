@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { AnimatedScore } from "@/frontend/components/motion/AnimatedScore";
 import { CheckCircle2, ChevronRight, FileText, Linkedin, Share2 } from "lucide-react";
 import UploadZone from "@/frontend/components/UploadZone";
-import PDFDownloadButton from "@/frontend/components/PDFDownloadButton";
 import ShareButton from "@/frontend/components/ShareButton";
+import NavigationTracker from "@/frontend/components/NavigationTracker";
 
 import { auth } from "@/backend/auth";
 import { redirect } from "next/navigation";
@@ -94,7 +94,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 {structured.summary && (
                                     <div className="relative group">
                                         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-4 flex items-center gap-4">
-                                            Professional Summary <div className="h-px bg-slate-800 grow" />
+                                            {structured.sectionNames?.summary || "Professional Summary"} <div className="h-px bg-slate-800 grow" />
                                         </h3>
                                         <div className="p-6 bg-white/5 rounded-2xl border border-white/5 group-hover:border-primary/30 transition-colors">
                                             <p className="text-slate-300 leading-8 text-lg font-light">
@@ -108,7 +108,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 {structured.skills && structured.skills.length > 0 && (
                                     <div>
                                         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center gap-4">
-                                            Core Competencies <div className="h-px bg-slate-800 grow" />
+                                            {structured.sectionNames?.skills || "Core Competencies"} <div className="h-px bg-slate-800 grow" />
                                         </h3>
                                         <div className="flex flex-wrap gap-3">
                                             {structured.skills.map((skill: string, i: number) => (
@@ -124,7 +124,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 {structured.experience && structured.experience.length > 0 && (
                                     <div>
                                         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-8 flex items-center gap-4">
-                                            Work History <div className="h-px bg-slate-800 grow" />
+                                            {structured.sectionNames?.experience || "Work History"} <div className="h-px bg-slate-800 grow" />
                                         </h3>
                                         <div className="space-y-10">
                                             {structured.experience.map((exp: any, i: number) => (
@@ -157,7 +157,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 {structured.education && structured.education.length > 0 && (
                                     <div>
                                         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 mb-6 flex items-center gap-4">
-                                            Education <div className="h-px bg-slate-800 grow" />
+                                            {structured.sectionNames?.education || "Education"} <div className="h-px bg-slate-800 grow" />
                                         </h3>
                                         <div className="grid gap-4">
                                             {structured.education.map((edu: any, i: number) => (
@@ -208,12 +208,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                             </p>
 
                             <div className="flex flex-col gap-6">
-                                <div className="w-full">
-                                    <PDFDownloadButton
-                                        data={structured}
-                                        fileName={`${structured.personalInfo?.name?.replace(/\s+/g, '-') || 'optimized'}-resume.pdf`}
-                                    />
-                                </div>
+
                                 <ShareButton />
                             </div>
                         </section>
@@ -224,6 +219,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                     </aside>
                 </div>
             </div>
+            <NavigationTracker reportId={id} />
         </div>
     );
 }

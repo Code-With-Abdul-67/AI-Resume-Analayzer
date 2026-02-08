@@ -3,6 +3,7 @@ import { prisma } from "@/backend/lib/prisma";
 import { redirect } from "next/navigation";
 import HistoryList from "@/frontend/components/HistoryList";
 import ClearHistoryButton from "@/frontend/components/ClearHistoryButton";
+import BackButton from "@/frontend/components/BackButton";
 import { History as HistoryIcon } from "lucide-react";
 
 export default async function HistoryPage() {
@@ -30,6 +31,8 @@ export default async function HistoryPage() {
             </div>
 
             <div className="max-w-6xl mx-auto space-y-8">
+                <BackButton text="Back to Report" className="mb-4" />
+
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/10">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-primary/20 rounded-2xl border border-primary/30">
