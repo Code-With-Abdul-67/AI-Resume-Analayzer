@@ -188,7 +188,7 @@ export default async function ResultsPage({ params }: { params: { id: string } }
                                 Optimization Tips
                             </h3>
                             <ul className="space-y-5">
-                                {resume.suggestions.map((tip, i) => (
+                                {resume.suggestions.map((tip: string, i: number) => (
                                     <li key={i} className="flex gap-4 text-sm text-slate-300 leading-relaxed group">
                                         <span className="shrink-0 w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-500 group-hover:text-green-400 group-hover:bg-green-400/10 transition-colors">
                                             {i + 1}
