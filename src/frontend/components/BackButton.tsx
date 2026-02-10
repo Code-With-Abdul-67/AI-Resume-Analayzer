@@ -11,12 +11,22 @@ export default function BackButton({ text = "Back", className = "" }: { text?: s
     const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const id = localStorage.getItem("lastSeenReportId");
-            if (id && id !== "undefined") {
-                setLastId(id);
+        const checkId = () => {
+            if (typeof window !== "undefined") {
+                const id = localStorage.getItem("lastSeenReportId");
+                if (id && id !== "undefined") {
+                    setLastId(id);
+                } else {
+                    setLastId(null);
+                }
             }
-        }
+        };
+
+        checkId();
+
+        // Listen for storage changes from other tabs or manual dispatches
+        window.addEventListener('storage', checkId);
+        return () => window.removeEventListener('storage', checkId);
     }, []);
 
     if (!lastId) return null;

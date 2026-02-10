@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Loader2, CheckCircle, Plus } from 'lucide-react';
-import { processResume } from '@/backend/actions';
+import { processResume, getResumeUsage } from '@/backend/actions';
 import { useSession } from 'next-auth/react';
+import { AlertCircle, Zap } from 'lucide-react';
 
 const loadingSteps = [
 
@@ -23,6 +24,13 @@ export default function UploadZone({ variant = 'full' }: UploadZoneProps) {
     const [progress, setProgress] = useState(0);
     const [stepIndex, setStepIndex] = useState(0);
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [usage, setUsage] = useState({ count: 0, limit: 10 });
+
+    useEffect(() => {
+        if (session) {
+            getResumeUsage().then(setUsage);
+        }
+    }, [session]);
 
     // Simulate progress and step changes
     useEffect(() => {
@@ -93,33 +101,66 @@ export default function UploadZone({ variant = 'full' }: UploadZoneProps) {
         <>
             {/* Standard Upload UI */}
             {variant === 'full' ? (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="border border-dashed border-white/20 rounded-2xl p-12 text-center bg-black/20 hover:bg-black/40 transition-all duration-300 group shadow-2xl backdrop-blur-sm"
-                >
-                    <label className="cursor-pointer block group">
-                        <div className="bg-white/5 w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-white/10 group-hover:border-primary/50 group-hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
-                            <Upload className="h-12 w-12 text-slate-300 group-hover:text-primary transition-colors" />
+                usage.count >= usage.limit ? (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="border border-amber-500/30 rounded-3xl p-12 text-center bg-amber-500/5 backdrop-blur-sm relative overflow-hidden group shadow-2xl"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-[60px] pointer-events-none" />
+                        <div className="bg-amber-500/20 w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-amber-500/30 group-hover:scale-110 transition-all duration-500 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                            <AlertCircle className="h-12 w-12 text-amber-400" />
                         </div>
-                        <span className="text-3xl font-black block text-white mb-2 group-hover:text-primary transition-colors tracking-tight">Upload Resume (PDF)</span>
-                        <span className="text-sm text-slate-400 font-bold uppercase tracking-widest">AI will automatically analyze and optimize it</span>
-                        <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
-                    </label>
-                    <div className="mt-6 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        Sign in to save your analysis to your account
-                    </div>
-                </motion.div>
+                        <h3 className="text-3xl font-black block text-white mb-2 tracking-tight">Quota Reached</h3>
+                        <p className="text-slate-400 mb-8 max-w-sm mx-auto leading-relaxed">
+                            You've used all <span className="text-amber-400 font-bold">{usage.limit}</span> free analyses.
+                            Upgrade to Pro to analyze unlimited resumes and unlock premium features.
+                        </p>
+                        <button className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-4 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-amber-500/20">
+                            Upgrade to Pro
+                        </button>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="border border-dashed border-white/20 rounded-2xl p-12 text-center bg-black/20 hover:bg-black/40 transition-all duration-300 group shadow-2xl backdrop-blur-sm"
+                    >
+                        <label className="cursor-pointer block group">
+                            <div className="bg-white/5 w-24 h-24 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-white/10 group-hover:border-primary/50 group-hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)]">
+                                <Upload className="h-12 w-12 text-slate-300 group-hover:text-primary transition-colors" />
+                            </div>
+                            <span className="text-3xl font-black block text-white mb-2 group-hover:text-primary transition-colors tracking-tight">Upload Resume (PDF)</span>
+                            <span className="text-sm text-slate-400 font-bold uppercase tracking-widest">AI will automatically analyze and optimize it</span>
+                            <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
+                        </label>
+                        <div className="mt-6 flex items-center justify-center gap-4">
+                            <div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                {session ? `Usage: ${usage.count} / ${usage.limit}` : "Sign in to save your analysis"}
+                            </div>
+                        </div>
+                    </motion.div>
+                )
             ) : (
                 <div className="w-full">
-                    <label className="cursor-pointer">
-                        <div className="w-full bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 py-4 rounded-xl font-bold text-lg text-white transition-all flex items-center justify-center gap-2 group">
-                            <Plus size={20} className="group-hover:text-primary transition-colors" />
-                            Upload Another Resume
+                    {usage.count >= usage.limit ? (
+                        <div className="w-full bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                                <AlertCircle size={20} className="text-amber-400" />
+                                <span className="text-sm font-bold text-white">Daily Limit Reached</span>
+                            </div>
+                            <span className="text-xs font-bold text-amber-500 uppercase tracking-widest">Upgrade</span>
                         </div>
-                        <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
-                    </label>
+                    ) : (
+                        <label className="cursor-pointer">
+                            <div className="w-full bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-white/10 py-4 rounded-xl font-bold text-lg text-white transition-all flex items-center justify-center gap-2 group">
+                                <Plus size={20} className="group-hover:text-primary transition-colors" />
+                                Upload Another Resume
+                            </div>
+                            <input type="file" className="hidden" onChange={handleUpload} accept=".pdf" />
+                        </label>
+                    )}
                 </div>
             )}
 

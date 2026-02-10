@@ -7,12 +7,34 @@ import { redirect } from "next/navigation";
 import { auth } from "@/backend/auth";
 import { revalidatePath } from "next/cache";
 
+const MAX_FREE_RESUMES = 10;
+
+export async function getResumeUsage() {
+  const session = await auth();
+  if (!session || !session.user?.id) return { count: 0, limit: MAX_FREE_RESUMES };
+
+  const count = await prisma.resume.count({
+    where: { userId: session.user.id }
+  });
+
+  return { count, limit: MAX_FREE_RESUMES };
+}
+
 export async function processResume(formData: FormData) {
   let savedId: string | null = null;
   const session = await auth();
 
   if (!session || !session.user?.id) {
     throw new Error("Unauthorized: Please sign in to upload resumes.");
+  }
+
+  // Quota Check
+  const count = await prisma.resume.count({
+    where: { userId: session.user.id }
+  });
+
+  if (count >= MAX_FREE_RESUMES) {
+    throw new Error(`Quota reached: You can only analyze up to ${MAX_FREE_RESUMES} resumes on the free tier.`);
   }
 
   try {
@@ -76,6 +98,29 @@ export async function clearHistory() {
     where: {
       userId: session.user.id
     } as any
+  });
+
+  revalidatePath('/history');
+}
+
+export async function deleteResume(id: string) {
+  const session = await auth();
+  if (!session || !session.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  // Ensure the resume belongs to the user
+  const resume = await prisma.resume.findUnique({
+    where: { id },
+    select: { userId: true }
+  });
+
+  if (!resume || resume.userId !== session.user.id) {
+    throw new Error("Resume not found or unauthorized");
+  }
+
+  await prisma.resume.delete({
+    where: { id }
   });
 
   revalidatePath('/history');

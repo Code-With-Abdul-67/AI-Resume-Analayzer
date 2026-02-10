@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import HistoryList from "@/frontend/components/HistoryList";
 import ClearHistoryButton from "@/frontend/components/ClearHistoryButton";
 import BackButton from "@/frontend/components/BackButton";
-import { History as HistoryIcon } from "lucide-react";
+import { History as HistoryIcon, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default async function HistoryPage() {
     const session = await auth();
@@ -43,14 +44,31 @@ export default async function HistoryPage() {
                             <p className="text-slate-400 mt-1">Track your progress and access past resume reports.</p>
                         </div>
                     </div>
-                    {resumes.length > 0 && <ClearHistoryButton />}
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/"
+                            className="glass-card px-6 py-2.5 rounded-xl bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/50 transition-all duration-300 font-bold flex items-center gap-2 shadow-lg shadow-primary/5"
+                        >
+                            <Plus size={18} />
+                            New Analysis
+                        </Link>
+                        {resumes.length > 0 && <ClearHistoryButton />}
+                    </div>
                 </header>
 
                 {resumes.length === 0 ? (
-                    <div className="text-center py-32 glass-card rounded-3xl border-dashed border-white/10">
-                        <HistoryIcon className="w-16 h-16 text-slate-600 mx-auto mb-4 opacity-50" />
+                    <div className="text-center py-32 glass-card rounded-3xl border-dashed border-white/10 flex flex-col items-center">
+                        <HistoryIcon className="w-16 h-16 text-slate-600 mb-6 opacity-30" />
                         <h2 className="text-2xl font-bold text-slate-400">No history found</h2>
-                        <p className="text-slate-500 mt-2">Upload your first resume to see it here!</p>
+                        <p className="text-slate-500 mt-2 mb-10">Upload your first resume to see it here!</p>
+
+                        <Link
+                            href="/"
+                            className="px-8 py-4 bg-primary rounded-2xl text-white font-black text-lg hover:bg-primary/90 transition-all shadow-2xl shadow-primary/20 flex items-center gap-3 active:scale-95"
+                        >
+                            <Plus size={24} />
+                            Start New Analysis
+                        </Link>
                     </div>
                 ) : (
                     <HistoryList resumes={resumes as any[]} />
