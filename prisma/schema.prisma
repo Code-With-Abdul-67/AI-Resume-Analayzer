@@ -1,10 +1,13 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/backend/lib/generated/client"
+  output   = "/app/generated/prisma-client"
 }
 
 datasource db {
   provider = "postgresql"
+  // url is now handled in prisma.config.ts
 }
 
 model User {
@@ -63,7 +66,7 @@ model VerificationToken {
 model Resume {
   id          String   @id @default(cuid())
   rawText     String   @db.Text
-  structured  Json // Optimized content from AI
+  structured  Json     // Optimized content from AI
   atsScore    Int
   suggestions String[]
   createdAt   DateTime @default(now())

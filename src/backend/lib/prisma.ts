@@ -1,13 +1,18 @@
-import { PrismaClient } from "./generated/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+// src/backend/lib/prisma.ts
 import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "./generated/client"; // Path from schema output
+
+const connectionString = process.env.POSTGRES_PRISMA_URL;
+
+// Create pool once outside the singleton
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
 const prismaClientSingleton = () => {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
     return new PrismaClient({
         adapter,
-        log: ["query"],
+        log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     });
 };
 
@@ -20,3 +25,5 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export default prisma;
