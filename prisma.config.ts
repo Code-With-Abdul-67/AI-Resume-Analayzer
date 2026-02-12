@@ -5,8 +5,7 @@ import { defineConfig, env } from "prisma/config";
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    // Vercel Postgres provides POSTGRES_PRISMA_URL as the pooled connection
-    url: env("DATABASE_URL"), 
+    url: env("DIRECT_URL"),
   },
   migrations: {
     path: "prisma/migrations",

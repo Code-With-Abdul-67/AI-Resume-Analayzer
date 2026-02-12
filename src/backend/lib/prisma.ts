@@ -1,19 +1,12 @@
 // src/backend/lib/prisma.ts
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/client"; // Path from schema output
-
-const connectionString = process.env.POSTGRES_PRISMA_URL;
-
-// Create pool once outside the singleton
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
+import { PrismaClient } from "@prisma/client";
+import { withAccelerate } from "@prisma/extension-accelerate";
 
 const prismaClientSingleton = () => {
     return new PrismaClient({
-        adapter,
+        accelerateUrl: process.env.DATABASE_URL,
         log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    });
+    }).$extends(withAccelerate());
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;

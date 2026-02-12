@@ -2,12 +2,10 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "/app/generated/prisma-client"
 }
 
 datasource db {
   provider = "postgresql"
-  // url is now handled in prisma.config.ts
 }
 
 model User {
