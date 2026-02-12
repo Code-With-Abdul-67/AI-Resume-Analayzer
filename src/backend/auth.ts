@@ -1,32 +1,35 @@
-import NextAuth from "next-auth"
+import NextAuth, { type DefaultSession } from "next-auth"
 import Google from "next-auth/providers/google"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/backend/lib/prisma"
 
+// 1. Fix TypeScript errors for the session object
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession["user"]
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    adapter: PrismaAdapter(prisma as any) as any,
+    adapter: PrismaAdapter(prisma),
     secret: process.env.AUTH_SECRET,
+    // trustHost is vital for Vercel/proxies
     trustHost: true,
-    debug: true, // Enable debug logs to see exact error in Vercel
+    debug: process.env.NODE_ENV === "development", 
     providers: [
         Google({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET,
+            // Google usually requires this to link multiple login methods
+            allowDangerousEmailAccountLinking: true, 
         }),
     ],
     callbacks: {
-        async signIn({ user, account, profile }) {
-            console.log("Check Env:", {
-                secret: !!process.env.AUTH_SECRET,
-                googleId: !!process.env.AUTH_GOOGLE_ID,
-                trustHost: !!process.env.AUTH_TRUST_HOST,
-                url: !!process.env.AUTH_URL
-            });
-            console.log("Sign-in attempt:", { user: user?.email, provider: account?.provider });
-            return true;
-        },
-        session({ session, user }) {
-            if (session.user) {
+        async session({ session, user }) {
+            // In v5 with an Adapter, 'user' is the database user
+            if (session.user && user) {
                 session.user.id = user.id;
             }
             return session;
