@@ -5,6 +5,7 @@ import { prisma } from "@/backend/lib/prisma"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     adapter: PrismaAdapter(prisma as any) as any,
+    secret: process.env.AUTH_SECRET,
     trustHost: true,
     debug: true, // Enable debug logs to see exact error in Vercel
     providers: [
