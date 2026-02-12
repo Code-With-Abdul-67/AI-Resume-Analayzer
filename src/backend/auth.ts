@@ -25,7 +25,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return true;
         },
     },
-    pages: {
-        error: '/api/auth/error', // Redirect to custom or default error page
-    }
 })
