@@ -241,3 +241,6 @@ export default function Navbar() {
                 )}
             </AnimatePresence>
         </>
+        );
+    };
+export default Navbar;
