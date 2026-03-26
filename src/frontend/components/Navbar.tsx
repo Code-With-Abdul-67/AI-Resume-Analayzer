@@ -1,4 +1,4 @@
-"use client";
+use client;
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,13 +17,13 @@ export default function Navbar() {
     const navLinks = [
         {
             name: "Become a Contributor",
-            href: "https://github.com/Code-With-Abdul-67/resume-ai-analyzer/issues",
-            icon: <HandHelping className="w-4 h-4" />,
+            href: "https://github.com/Code-With-Abdul-67/AI-Resume-Analayzer/issues",
+            icon: <HandHelping className="w-4 h-4" />, 
         },
         {
             name: "GitHub",
-            href: "https://github.com/Code-With-Abdul-67/resume-ai-analyzer",
-            icon: <Github className="w-4 h-4" />,
+            href: "https://github.com/Code-With-Abdul-67/AI-Resume-Analayzer",
+            icon: <Github className="w-4 h-4" />, 
         },
     ];
 
@@ -240,6 +240,5 @@ export default function Navbar() {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </>
-    );
+        </>;
 }
